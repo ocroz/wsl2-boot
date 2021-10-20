@@ -1,0 +1,5 @@
+[wsl2]
+memory=3GB               # Limits VM memory in WSL 2 up to 3GB
+processors=4             # Makes the WSL 2 VM use two virtual processors
+localhostForwarding=true # Access WSL apps from Windows at localhost
+# There's no way to limit the disk io yet, like we can do on a Hyper-V VM.

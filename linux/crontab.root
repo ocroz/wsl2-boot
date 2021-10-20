@@ -1,0 +1,4 @@
+# @reboot directive tells cron service to run this command on machine boot
+# "bash.exe --login" sources $HOME/.bash_profile and proxies Windows Pageant to get its SSH keys
+
+@reboot "/mnt/c/Program Files/Git/bin/bash.exe" --login -c "ssh ubuntu@192.168.50.2 whoami >/dev/null"
