@@ -4,12 +4,15 @@
 function New-HnsNetwork() {
   Param(
     [parameter(Mandatory=$true)] [String] $Name = "WSL",
-    [parameter(Mandatory=$true)] [String] $AddressPrefix = "192.168.50.0/24"
+    [parameter(Mandatory=$true)] [String] $AddressPrefix = "192.168.50.0/24",
     [parameter(Mandatory=$true)] [String] $GatewayAddress = "192.168.50.1"
   )
+  if ($PSBoundParameters['Debug']) { $DebugPreference = "Continue" }
+  Write-Debug "Creating new network with Name $Name, AddressPrefix $AddressPrefix, GatewayAddress $GatewayAddress ..."
 
   # Helper functions first
   function Get-HcnMethods() {
+    $DebugPreference = "SilentlyContinue"
     $signature = @'
       [DllImport("computenetwork.dll")] public static extern System.Int64 HcnCreateNetwork(
         [MarshalAs(UnmanagedType.LPStruct)] Guid Id,
@@ -35,23 +38,35 @@ function New-HnsNetwork() {
   }
 
   # Create this network
-  $network = [ordered]@{
-    Name = $Name
-    Type = "ICS"
-    IPv6 = $false
-    IsolateSwitch = $true
-    MaxConcurrentEndpoints = 1
-    Subnets =  @([ordered]@{
-      AddressPrefix = $AddressPrefix
-      GatewayAddress = $GatewayAddress
-      IpSubnets = @(@{ IpAddressPrefix = $AddressPrefix })
-    })
-    DNSServerList = $GatewayAddress
-  }
-  $settings = $network | ConvertTo-Json -Depth 100
+  $settings = @"
+    {
+      "Name" : "WSL",
+      "Flags": 9,
+      "Type": "ICS",
+      "IPv6": false,
+      "IsolateSwitch": true,
+      "MaxConcurrentEndpoints": 1,
+      "Subnets" : [
+        {
+          "ObjectType": 5,
+          "AddressPrefix" : "$AddressPrefix",
+          "GatewayAddress" : "$GatewayAddress",
+          "IpSubnets" : [
+            {
+              "Flags": 3,
+              "IpAddressPrefix": "$AddressPrefix",
+              "ObjectType": 6
+            }
+          ]
+        }
+      ],
+      "DNSServerList" : "$GatewayAddress"
+    }
+"@
+  Write-Debug "Creating network with these parameters: $settings"
 
   $hcnClientApi = Get-HcnMethods
-  $id = "A1B2C3D4-E5F6-1234-4321-F6E5D4C3B2A1"
+  $id = "B95D0C5E-57D4-412B-B571-18A81A16E005"
   $handle = 0
   $result = ""
   $hr = $hcnClientApi::HcnCreateNetwork($id, $settings, [ref] $handle, [ref] $result)
