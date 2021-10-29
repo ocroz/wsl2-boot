@@ -22,7 +22,7 @@ git clone https://github.com/ocroz/wsl2-boot
 cd wsl2-boot
  
 # Update the subnet as you need e.g. to replace "192.168.50" by "192.168.130"
-find . -type f -exec sed -i 's,\.50,.130,g' {} \;
+find [lw]*/ -type f -exec sed -i 's,\.50,.130,g' {} \;
 git diff
  
 # First time on Linux
