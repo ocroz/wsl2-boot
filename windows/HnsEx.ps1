@@ -1,5 +1,15 @@
-# Add missing PowerShell function New-HnsNetwork()
-# related to existing Get-HnsNetwork() and Remove-HnsNetwork() functions
+<#
+.SYNOPSIS
+  Add missing PowerShell function New-HnsNetwork()
+  related to existing Get-HnsNetwork() and Remove-HnsNetwork() functions.
+.DESCRIPTION
+  This script provides a new function New-HnsNetwork()
+  derived from the function New-HnsNetworkEx() provided by the referenced script
+  and simplified at a maximum.
+.NOTES
+.LINK
+  https://www.powershellgallery.com/packages/HNS/0.2.4/Content/HNS.V2.psm1
+#>
 
 function New-HnsNetwork() {
   Param(
@@ -41,21 +51,17 @@ function New-HnsNetwork() {
   $settings = @"
     {
       "Name" : "WSL",
-      "Flags": 9,
       "Type": "ICS",
       "IPv6": false,
       "IsolateSwitch": true,
       "MaxConcurrentEndpoints": 1,
       "Subnets" : [
         {
-          "ObjectType": 5,
           "AddressPrefix" : "$AddressPrefix",
           "GatewayAddress" : "$GatewayAddress",
           "IpSubnets" : [
             {
-              "Flags": 3,
-              "IpAddressPrefix": "$AddressPrefix",
-              "ObjectType": 6
+              "IpAddressPrefix": "$AddressPrefix"
             }
           ]
         }
