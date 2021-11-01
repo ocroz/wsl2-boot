@@ -27,7 +27,9 @@
 Param(
   $WslSubnetPrefix = "192.168.50",
   $distribution = $null,
-  [IPAddress] $ip = $null
+  [IPAddress] $ip = $null,
+  $force = $False,
+  $debug = $False
 )
 $Name = "WSL"
 $WslSubnet = "$WSLSubnetPrefix.0/24"
@@ -49,7 +51,7 @@ $CurrentPath = Split-Path $script:MyInvocation.MyCommand.Path -Parent
 $wslNetwork = Get-HnsNetwork | Where-Object { $_.Name -eq $Name }
 
 # Create or recreate WSL network if necessary
-if ($wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $WslSubnet) {
+if ($force -Or $wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $WslSubnet) {
   # To cleanly delete the VMSwitch named WSL along with WSL Network (see: Get-VMSwitch -Name WSL)
   # and to assign correct DNS nameserver after WSL Network is recreated and WSL host is restarted:
   # - Cleanly shutdown all WSL hosts, and
@@ -73,7 +75,8 @@ if ($wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $WslSubnet) 
   $wslNetNat | Foreach {Remove-NetNat -Confirm:$False -Name:$_.Name}
 
   # Create new WSL network
-  New-HnsNetwork -Name $Name -AddressPrefix $WslSubnet -GatewayAddress $GatewayIP # -Debug
+  if ($debug) { New-HnsNetwork -Name $Name -AddressPrefix $WslSubnet -GatewayAddress $GatewayIP -Debug }
+  else { New-HnsNetwork -Name $Name -AddressPrefix $WslSubnet -GatewayAddress $GatewayIP }
 
   # Revert the earlier configuration back as it was
   if ($wslVMs) {

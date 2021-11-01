@@ -51,17 +51,21 @@ function New-HnsNetwork() {
   $settings = @"
     {
       "Name" : "WSL",
+      "Flags": 9,
       "Type": "ICS",
       "IPv6": false,
       "IsolateSwitch": true,
       "MaxConcurrentEndpoints": 1,
       "Subnets" : [
         {
+          "ObjectType": 5,
           "AddressPrefix" : "$AddressPrefix",
           "GatewayAddress" : "$GatewayAddress",
           "IpSubnets" : [
             {
-              "IpAddressPrefix": "$AddressPrefix"
+              "Flags": 3,
+              "IpAddressPrefix": "$AddressPrefix",
+              "ObjectType": 6
             }
           ]
         }

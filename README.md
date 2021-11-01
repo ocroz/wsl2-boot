@@ -90,6 +90,15 @@ However the DNS resolution failed to work if the Windows host was connected via 
 
 See: https://docs.microsoft.com/en-us/virtualization/windowscontainers/container-networking/architecture
 
+## Troubleshoot
+
+```powershell
+# Force re-creating the WSL network with this command,
+# which you run from an elevated prompt (Run As Administrator)
+wsl-boot -force True
+wsl-boot -force True -debug True
+```
+
 ## Use WSL2 daily
 
 See [DAILY](./DAILY.md).
