@@ -64,7 +64,7 @@ if ($wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $WslSubnet) 
   $wslNetwork | Remove-HnsNetwork
 
   # Destroy WSL network may fail if it happened in the wrong order like if it was done manually
-  if (Get-VMSwitch -Name $Name) {
+  if (Get-VMSwitch -Name $Name -ea "SilentlyContinue") {
     Throw "One more VMSwitch named $Name remains after destroying WSL network. Please reboot your computer to clean it up."
   }
 
@@ -92,3 +92,6 @@ Get-VM | Get-VMNetworkAdapter | ? SwitchName -eq $null | Connect-VMNetworkAdapte
 # Restart all VMs which failed to start due to network misconfiguration
 # as Virtual switch 'WSL' got deleted at Windows power down
 Get-VM | ? State -Eq Saved | Start-VM
+
+# Kind exit message
+Write-Host "wsl-boot succeeded !"

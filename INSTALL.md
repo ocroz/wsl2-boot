@@ -52,7 +52,17 @@ mkdir -p ~/.ssh; vi ~/.ssh/authorized_keys; chmod 700 ~/.ssh; chmod 600 ~/.ssh/*
 
 ## Start `wsl-boot` at Windows startup
 
-- Create a Windows shortcut from your `wsl-boot.bat`,
-- Right-click on this shortcut > Select `Properties`,<br/>
-  Select tab `Shortcut` > Click on `Advanced...` > Tick `Run as administrator` > `OK` > `OK`,
-- Move this Windows shortcut into `%USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`.
+There is no other way than to create a Windows scheduled task like [jgregmac](https://github.com/jgregmac) did with [hyperv-fix-for-devs](https://github.com/jgregmac/hyperv-fix-for-devs)<br/>
+if to run [wsl-boot-task.bat](./windows/wsl-boot-task.bat) with elevated permissions (Run As Administrator).
+- Open the [Windows Task Scheduler](https://www.windowscentral.com/how-create-automated-task-using-task-scheduler-windows-10),
+- Select `Task Scheduler Library` from the left panel, and Right-click on it,
+- Select `Create Task...`,
+- Tab General: Name = `wsl-boot`, tick `Run with highest privileges`,
+- Tab Triggers: New... > Begin the task `At log on` specific user,
+- Tab Actions: New... ><br/>
+  Program = `C:\WINDOWS\system32\cmd.exe`,<br/>
+  Arguments = `/c start /min %USERPROFILE%\git\github.com\wsl2-boot\windows\wsl-boot-task.bat`,
+- Tab Conditions: Keep default,
+- OK
+
+Note: We run `wsl-boot-task.bat` to log and force exit.
