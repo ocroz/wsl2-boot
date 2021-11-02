@@ -78,7 +78,7 @@ if ($force -Or $wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $
   if ($debug) { New-HnsNetwork -Name $Name -AddressPrefix $WslSubnet -GatewayAddress $GatewayIP -Debug }
   else { New-HnsNetwork -Name $Name -AddressPrefix $WslSubnet -GatewayAddress $GatewayIP }
 
-  # Revert the earlier configuration back as it was
+  # Restart all previously started Hyper-V VMs connected to VMSwitch WSL
   if ($wslVMs) {
     Write-Host "Restarting all Hyper-V VMs connected to VMSwitch $Name ..."
     $wslVMs | Foreach { Start-VM -Name $_.VMName }

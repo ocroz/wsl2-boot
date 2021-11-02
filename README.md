@@ -17,10 +17,12 @@ After running `wsl-boot` command:
 - All Hyper-V VMs connected to WSL VMSwitch are managed too,<br/>
   so all WSL hosts and Hyper-V VMs can talk to each other always,
 - The DNS resolution works however you are connected to Internet or VPN,
-- You can SSH to WSL host from GitBash (Git for Windows) without any delay.
+- You can SSH to WSL host without any delay.
 
 Other advantages:
-- This project is short and modular as you decide what to install,
+- This project is short,
+- It runs a `clean shutdown` and `clean start` sequence,
+- It uses native PowerShell functions apart New-HnsNetwork(),
 - You decide when to boot WSL from a PowerShell or cmd prompt,<br/>
   or double click on bat file, or at Windows startup,
 - This script was tested with PowerShell 5.1 and 7.1.
@@ -63,8 +65,8 @@ The command `wsl-boot` starts this flow:
 3. [/boot/wsl-boot.sh](./linux/wsl-boot.sh) (bash as root): set static ip, start service ssh, then returns immediately.
 
 *Addendum:*<br/>
-The order in `clean shutdown` and `clean start` is necessary for everything to work, especially the communication between all WSL hosts and other Hyper-V VMs, the Internet connection and the DNS resolution, and the first SSH to WSL.<br/>
-See also Addendum in [TOTO](./doc/TOTO.md).
+The order in `clean shutdown` and `clean start` is necessary for everything to work, especially the communication between all WSL hosts and other Hyper-V VMs, the Internet connection and the DNS resolution, and the first SSH to WSL.
+See also Addendum in [TODO](./doc/TODO.md).
 
 # Few considerations
 
