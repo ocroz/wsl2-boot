@@ -3,12 +3,8 @@
 Please carefully read and understand the scripts before installing them:
 - May be you prefer different WSL2 configuration,
 - Note: The configuration `generateResolvConf = true` is intended to create /etc/resolv.conf,
-- May be you don't want to start ssh and cron services at boot,
-- May be you don't want to run the crontab of user root and its @reboot commands,
-- May be you don't have Git for Windows installed, so you don't have GitBash,
-- May be you don't have Windows pageant installed,
-- May be you don't need a ssh agent, or you prefer another solution than Windows pageant,
-- May be you have ssh-pageant already configured in GitBash,
+- May be you don't want to start ssh service at boot,
+- May be you don't have Git for Windows installed, so you don't have GitBash and tee,
 - Please set variable windowsUsername before run these commands.
 
 ```bash
@@ -31,7 +27,7 @@ sudo ssh-keygen -A
 sudo cp linux/wsl.conf /etc/
 sudo cp linux/wsl-boot.sh /boot/
 sudo chmod 744 /boot/wsl-boot.sh
-cat linux/crontab.root | sudo crontab
+#cat linux/crontab.root | sudo crontab
  
 # Windows part
 unix2dos windows/.[bw]* windows/*

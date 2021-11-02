@@ -20,10 +20,10 @@ After running `wsl-boot` command:
 - You can SSH to WSL host from GitBash (Git for Windows) without any delay.
 
 Other advantages:
-- This project is simple and modular as you decide what to install,
+- This project is short and modular as you decide what to install,
 - You decide when to boot WSL from a PowerShell or cmd prompt,<br/>
   or double click on bat file, or at Windows startup,
-- This script was tested with PowerShell 5.1 and 7.1 (see: Get-Host).
+- This script was tested with PowerShell 5.1 and 7.1.
 
 # Installation
 
@@ -60,15 +60,11 @@ More details at https://docs.microsoft.com/en-us/windows/wsl/wsl-config#wsl-2-se
 The command `wsl-boot` starts this flow:
 1. [wsl-boot](./windows/wsl-boot.bat) (.bat) (**Run As Administrator**) ->
 2. [wsl-boot.ps1](./windows/wsl-boot.ps1) (PowerShell): `clean shutdown` + [New-HnsNetwork()](./windows/HnsEx.ps1) + `clean start` ->
-3. [/boot/wsl-boot.sh](./linux/wsl-boot.sh) (bash as root): set static ip, start services ssh & cron, then returns immediately.
-4. [crontab.root](./linux/wsl-boot.sh) (cron as root): This runs the crontab of user root and its @reboot commands.
-5. (cron as root > GitBash as current Windows user):<br/>
-`bash.exe --login` sources [.bash_profile](./windows/.bash_profile) and proxies Windows Pageant to get its SSH keys<br/>
-in order to succeed `ssh ubuntu@IP whoami`.<br/>
-Note: With updating fixed IP at boot, ssh takes approx 16s to complete the very first time.<br/>
-At least now it's automated, so as a user we shouldn't wait that much anymore.
+3. [/boot/wsl-boot.sh](./linux/wsl-boot.sh) (bash as root): set static ip, start service ssh, then returns immediately.
 
-The order in `clean shutdown` and `clean start` is necessary for everything to work, especially the communication between all WSL hosts and other Hyper-V VMs, the Internet connection, and the DNS resolution.
+*Addendum:*<br/>
+The order in `clean shutdown` and `clean start` is necessary for everything to work, especially the communication between all WSL hosts and other Hyper-V VMs, the Internet connection and the DNS resolution, and the first SSH to WSL.<br/>
+See also Addendum in [TOTO](./doc/TOTO.md).
 
 # Few considerations
 
@@ -101,4 +97,4 @@ wsl-boot -force True -debug True
 
 ## Use WSL2 daily
 
-See [DAILY](./DAILY.md).
+See [DAILY](./doc/DAILY.md).
