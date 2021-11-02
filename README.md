@@ -13,18 +13,16 @@ Other projects exist to solve them, among others:
 
 After running `wsl-boot` command:
 - The WSL network is configured as per its predefined definition always (Windows side),
-- All WSL2 hosts are configured with their predefined static IP always (Linux side),
-- All Hyper-V VMs connected to WSL VMSwitch are managed too,<br/>
-  so all WSL hosts and Hyper-V VMs can talk to each other always,
+- All WSL hosts are configured with their predefined static IP always (Linux side),
+- All WSL hosts and connected Hyper-V VMs can talk to each other always,
 - The DNS resolution works however you are connected to Internet or VPN,
 - You can SSH to WSL host without any delay.
 
 Other advantages:
-- This project is short,
-- It runs a `clean shutdown` and `clean start` sequence,
-- It uses native PowerShell functions apart New-HnsNetwork(),
-- You decide when to boot WSL from a PowerShell or cmd prompt,<br/>
-  or double click on bat file, or at Windows startup,
+- This project is short and simple,
+- It uses native PowerShell functions apart `New-HnsNetwork()`, and the native `wsl` command,
+- The unique command `wsl-boot` starts everything cleanly and completely, including the connected VMs,
+- You can boot either from a PowerShell or cmd prompt, or double click on bat file, or at Windows startup,
 - This script was tested with PowerShell 5.1 and 7.1.
 
 # Installation
@@ -81,8 +79,9 @@ The WSL2 machine and all other VMs must be connected to the same virtual switch 
 
 The DNS server on every WSL2 and VM is the static IP of the host, so dynamically it resolves DNS on every WSL2 and VM like in the host, always (at least if running a `clean shutdown` and `clean start`).
 
+*Addendum:*<br/>
 The original implementation of this project [wsl2-boot](https://github.com/ocroz/wsl2-boot) derived from [WSL/issues/4210#issuecomment-856482892](https://github.com/microsoft/WSL/issues/4210#issuecomment-856482892).
-However the DNS resolution failed to work if the Windows host was connected via a VPN. Creating a **H**ost **C**ompute **N**etwork (HCN) solved this problem. A big thanks to [skorhone](https://github.com/skorhone) who found the solution which he provided at [wsl2-custom-network](https://github.com/skorhone/wsl2-custom-network).
+However the DNS resolution failed to work if the Windows host was connected via a VPN. Creating a **H**ost **C**ompute **N**etwork (HCN) solved this problem. A big thanks to [skorhone](https://github.com/skorhone) and the solution [wsl2-custom-network](https://github.com/skorhone/wsl2-custom-network).
 
 ## HCN architecture
 

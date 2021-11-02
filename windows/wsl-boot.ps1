@@ -5,8 +5,7 @@
   - This script create or recreate the WSL network on Windows side,
     and updates the WSL machine with the pre-defined static IP on Linux side.
   - This script manages other Hyper-V VMs connected to WSL network too.
-  - This script also starts few Linux services (sshd, crond), so at every cron reboot,
-    the Linux machine establishes the first ssh connection from GitBash (Windows) to WSL (Linux).
+  - This script also starts few Linux services (sshd).
 .NOTES
   - This script must Run As Administrator from a Windows PowerShell prompt,
     or from the bat file executed with elevated permission (Run As Administrator).
@@ -14,12 +13,11 @@
     creates the NetAdapter 'vEthernet (WSL)' if it does not exist already (Windows deletes it on Windows power down).
     However this script creates the NetAdapter first, so WSL will re-use it.
   - The command /boot/wsl-boot.sh updates the primary ip addr on Linux side, and starts few Linux services.
-  - The crontab for user root runs @reboot ssh from GitBash to WSL, as it takes approx 16s to complete the very first time.
   - Windows assigns the correct DNS nameserver if everything happened in the correct order
     i.e. WSL2 lightweight utility virtual machine is down and all Hyper-V VMs using WSL VMSwitch are down too
     before WSL network is recreated.
   - The DNS resolution works in any situation however you are connected to Internet, and with or without VPN.
-  Note: You should connect all VMs in Hyper-V or VirtualBox to the VMSwitch 'WSL' too.
+  Note: You should connect all VMs in Hyper-V to the VMSwitch 'WSL' too.
 .LINK
   https://github.com/ocroz/wsl2-boot
 #>

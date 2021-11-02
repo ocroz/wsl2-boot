@@ -13,7 +13,9 @@ Among others:
 - How best to log?
 - What if Git for Windows is not installed, or in a different directory than "C:\Program Files\Git"?
 - Can we pass parameter `-debug` rather than `-debug True` (same about -force) ?
+- How to Write-Debug in main script?
 - How best to pass the debug parameter to children scripts and functions?
+- Error handling?
 
 # Addendum
 
@@ -23,5 +25,5 @@ In the original solution, `wsl-boot.sh` started the service cron too, so the boo
 5. (cron as root > GitBash as current Windows user):<br/>
 `bash.exe --login` sources [.bash_profile](./windows/.bash_profile) and proxies Windows Pageant to get its SSH keys<br/>
 in order to succeed `ssh ubuntu@IP whoami`.<br/>
-Note: With updating fixed IP at boot, ssh takes approx 16s to complete the very first time.<br/>
-At least now it's automated, so as a user we shouldn't wait that much anymore.
+Note: In the original solution, with updating fixed IP at boot, ssh took approx 16s to complete the very first time.<br/>
+At least with this trick, it was automated, so as a user we shouldn't have to wait that much anymore.
