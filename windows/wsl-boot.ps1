@@ -26,6 +26,7 @@ Param(
   $WslSubnetPrefix = "192.168.50",
   $distribution = $null,
   [IPAddress] $ip = $null,
+  $reboot = $False,
   $force = $False,
   $debug = $False
 )
@@ -47,6 +48,9 @@ $CurrentPath = Split-Path $script:MyInvocation.MyCommand.Path -Parent
 
 # Check any existing WSL network
 $wslNetwork = Get-HnsNetwork | Where-Object { $_.Name -eq $Name }
+
+# Reboot?
+if ($reboot) { wsl --shutdown }
 
 # Create or recreate WSL network if necessary
 if ($force -Or $wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $WslSubnet) {
@@ -76,6 +80,14 @@ if ($force -Or $wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $
   if ($debug) { New-HnsNetwork -Name $Name -AddressPrefix $WslSubnet -GatewayAddress $GatewayIP -Debug }
   else { New-HnsNetwork -Name $Name -AddressPrefix $WslSubnet -GatewayAddress $GatewayIP }
 
+  # Switch all misconfigured Hyper-V VMs to newly created Virtual VMSwitch 'WSL'
+  Write-Host "Switching all misconfigured Hyper-V VMs to newly created VMSwitch $Name ..."
+  Get-VM | Get-VMNetworkAdapter | ? SwitchName -eq $null | Connect-VMNetworkAdapter -SwitchName $Name
+
+  # Restart all VMs which failed to start due to network misconfiguration
+  # as Virtual switch 'WSL' got deleted at Windows power down
+  Get-VM | ? State -Eq Saved | Start-VM
+
   # Restart all previously started Hyper-V VMs connected to VMSwitch WSL
   if ($wslVMs) {
     Write-Host "Restarting all Hyper-V VMs connected to VMSwitch $Name ..."
@@ -83,16 +95,17 @@ if ($force -Or $wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $
   }
 }
 
+# Patch DNS nameserver, especially under VPN
+# See https://www.harrycaskey.com/detect-vpn-connection-with-powershell/
+$dnsIP = $GatewayIP
+$vpnCheck = Get-WmiObject -Query "Select Name,NetEnabled from Win32_NetworkAdapter where (Name like '%AnyConnect%' or Name like '%Juniper%' or Name like '%VPN%') and NetEnabled='True'"
+if ([bool]$vpnCheck) {
+  $dnsIPs = Get-DnsClientServerAddress -AddressFamily ipv4 | Select-Object -ExpandProperty ServerAddresses
+  $dnsIP=$dnsIPs[0]
+}
+
 # wsl-boot.sh updates primary ip addr to $WslHostIP and starts few services on Linux side.
-wsl $d $distribution -u root /boot/wsl-boot.sh $WslSubnetPrefix $WslHostIP $GatewayIP
-
-# Switch all misconfigured Hyper-V VMs to newly created Virtual VMSwitch 'WSL'
-Write-Host "Switching all misconfigured Hyper-V VMs to newly created VMSwitch $Name ..."
-Get-VM | Get-VMNetworkAdapter | ? SwitchName -eq $null | Connect-VMNetworkAdapter -SwitchName $Name
-
-# Restart all VMs which failed to start due to network misconfiguration
-# as Virtual switch 'WSL' got deleted at Windows power down
-Get-VM | ? State -Eq Saved | Start-VM
+wsl $d $distribution -u root /boot/wsl-boot.sh $WslSubnetPrefix $WslHostIP $GatewayIP $dnsIP
 
 # Kind exit message
-Write-Host "wsl-boot succeeded !"
+Write-Host "wsl-boot completed !"

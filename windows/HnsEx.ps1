@@ -58,13 +58,11 @@ function New-HnsNetwork() {
       "MaxConcurrentEndpoints": 1,
       "Subnets" : [
         {
-          "ID" : "FC437E99-2063-4433-A1FA-F4D17BD55C92",
           "ObjectType": 5,
           "AddressPrefix" : "$AddressPrefix",
           "GatewayAddress" : "$GatewayAddress",
           "IpSubnets" : [
             {
-              "ID" : "4D120505-4143-4CB2-8C53-DC0F70049696",
               "Flags": 3,
               "IpAddressPrefix": "$AddressPrefix",
               "ObjectType": 6
