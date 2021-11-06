@@ -77,7 +77,9 @@ The WSL2 machine and all other VMs must be connected to the same virtual switch 
 
 ## DNS aliases
 
-The DNS server on every WSL2 and VM is the static IP of the host, so dynamically it resolves DNS on every WSL2 and VM like in the host, always (at least if running a `clean shutdown` and `clean start`).
+The DNS server on every WSL2 and VM is the static IP of the host, so dynamically it should resolve DNS on every WSL2 and VM like in the host, always (at least if running a `clean shutdown` and `clean start`).
+
+However, the DNS fails to work properly in containers (docker, podman) inside the WSL host. The only solution if to reach remote DNS resources is to patch the DNS nameserver with the one provided by the VPN, which can be achieved if running `wsl-boot` everytime the VPN connected or disconnected (See [INSTALL](./INSTALL.md)).
 
 *Addendum:*<br/>
 The original implementation of this project [wsl2-boot](https://github.com/ocroz/wsl2-boot) derived from [WSL/issues/4210#issuecomment-856482892](https://github.com/microsoft/WSL/issues/4210#issuecomment-856482892).
@@ -92,8 +94,8 @@ See: https://docs.microsoft.com/en-us/virtualization/windowscontainers/container
 ```powershell
 # Force re-creating the WSL network with this command,
 # which you run from an elevated prompt (Run As Administrator)
-wsl-boot -force True
-wsl-boot -force True -debug True
+wsl-boot -force $True
+wsl-boot -force $True -Debug
 ```
 
 ## Use WSL2 daily

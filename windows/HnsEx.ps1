@@ -17,8 +17,7 @@ function New-HnsNetwork() {
     [parameter(Mandatory=$true)] [String] $AddressPrefix = "192.168.50.0/24",
     [parameter(Mandatory=$true)] [String] $GatewayAddress = "192.168.50.1"
   )
-  if ($PSBoundParameters['Debug']) { $DebugPreference = "Continue" }
-  Write-Debug "Creating new network with Name $Name, AddressPrefix $AddressPrefix, GatewayAddress $GatewayAddress ..."
+  Write-Debug "New-HnsNetwork() with Name $Name, AddressPrefix $AddressPrefix, GatewayAddress $GatewayAddress ..."
 
   # Helper functions first
   function Get-HcnMethods() {

@@ -55,10 +55,21 @@ if to run [wsl-boot-task.bat](./windows/wsl-boot-task.bat) with elevated permiss
 - Select `Create Task...`,
 - Tab General: Name = `wsl-boot`, tick `Run with highest privileges`,
 - Tab Triggers: New... > Begin the task `At log on` specific user,
+- Tab Triggers: New... > Begin the task `On event`:<br/>
+  Log: Microsoft-Windows-NetworkProfile/Operational<br/>
+  Source: NetworkProfile<br/>
+  Event ID: 10000 (The 10000 Event ID is logged when you connect to a network),
+- Tab Triggers: New... > Begin the task `On event`:<br/>
+  Log: Microsoft-Windows-NetworkProfile/Operational<br/>
+  Source: NetworkProfile<br/>
+  Event ID: 10001 (The 10001 Event ID is logged when you disconnect from a network),
 - Tab Actions: New... ><br/>
   Program = `C:\WINDOWS\system32\cmd.exe`,<br/>
   Arguments = `/c start /min %USERPROFILE%\git\github.com\wsl2-boot\windows\wsl-boot-task.bat`,
 - Tab Conditions: Keep default,
 - OK
 
-Note: We run `wsl-boot-task.bat` to log and force exit.
+Notes:
+- We trigger when VPN connected or disconnected too, see:<br/>
+  https://www.groovypost.com/howto/automatically-run-script-on-internet-connect-network-connection-drop/
+- We run `wsl-boot-task.bat` to log and force exit.
