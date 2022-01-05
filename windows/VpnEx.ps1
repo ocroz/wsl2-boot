@@ -66,7 +66,11 @@ function Set-VpnToggle() {
 
     # Patch DNS nameserver under VPN
     $dnsIPs = $vpnNet | Get-DnsClientServerAddress -AddressFamily IPv4 | Select-Object -ExpandProperty ServerAddresses
-    $dnsIP=$dnsIPs[0]
+    $dnsIP = $dnsIPs[0]
+
+    # Patch DNS search under VPN
+    $dnsSearches = Get-DnsClientGlobalSetting | Foreach { $_.SuffixSearchList }
+    $dnsSearch = $dnsSearches[0]
   } else {
     # Revert any change if not using VPN
 
@@ -87,6 +91,6 @@ function Set-VpnToggle() {
   }
 
   # Return settings to apply on Linux side too
-  Write-Debug "dnsIP=$dnsIP,wslMtu=$wslMtu."
-  return $dnsIP,$wslMtu
+  Write-Debug "dnsIP=$dnsIP,dnsSearch=$dnsSearch,wslMtu=$wslMtu."
+  return $dnsIP,$dnsSearch,$wslMtu
 }

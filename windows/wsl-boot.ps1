@@ -96,10 +96,10 @@ function Start-WslBoot() {
   }
 
   # Apply changes to WSL network if or if not using VPN
-  $dnsIP,$wslMtu = Set-VpnToggle -Name $Name -reboot $reboot
+  $dnsIP,$dnsSearch,$wslMtu = Set-VpnToggle -Name $Name -reboot $reboot
 
   # wsl-boot.sh updates primary ip addr to $WslHostIP and starts few services on Linux side.
-  wsl $d $distribution -u root /boot/wsl-boot.sh $WslSubnetPrefix $WslHostIP $GatewayIP $dnsIP $wslMtu
+  wsl $d $distribution -u root /boot/wsl-boot.sh -p $WslSubnetPrefix -g $GatewayIP -i $WslHostIP -n $dnsIP -s $dnsSearch -m $wslMtu
 
   # Kind exit message
   Write-Host "wsl-boot completed !"
