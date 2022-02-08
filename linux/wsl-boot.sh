@@ -12,9 +12,9 @@ function usage {
 }
 
 function check {
-  # Fail if $2 is empty or starts with "-"
-  if [ -z "$2" -o "${2:0:1}" == "-" ];then
-    echo "$0: Option $1 needs a parameter"; usage; exit 1
+  # Fail if $2 starts with "-"
+  if [ "${2:0:1}" == "-" ];then
+    echo "$0: Option $1 needs a parameter (received $2)"; usage; exit 1
   fi
 }
 
@@ -37,11 +37,12 @@ done
 [ -z "$WslSubnetPrefix" ] && WslSubnetPrefix="192.168.50"
 [ -z "$GatewayIP" ] && GatewayIP="$WslSubnetPrefix.1"
 [ -z "$WslHostIP" ] && WslHostIP="$WslSubnetPrefix.2"
+[ -z "$DnsServer" ] && DnsServer="$GatewayIP"
 
 echo Booting $(hostname -s) with WslSubnetPrefix=$WslSubnetPrefix, GatewayIP=$GatewayIP, WslHostIP=$WslHostIP ...
-if [ -n "$DnsServer" ];then echo "With nameserver=$DnsServer ..."; fi
-if [ -n "$DnsSearch" ];then echo "With search=$DnsSearch ..."; fi
-if [ -n "$NlMtuSize" ];then echo "With mtu=$NlMtuSize ..."; fi
+[ -n "$DnsServer" ] && echo "With nameserver=$DnsServer ..."
+[ -n "$DnsSearch" ] && echo "With search=$DnsSearch ..."
+[ -n "$NlMtuSize" ] && echo "With mtu=$NlMtuSize ..."
 
 # Debug logging
 log=/var/log/wsl-boot.log
