@@ -2,17 +2,22 @@
 
 Please carefully read and understand the scripts before installing them:
 - May be you prefer different WSL2 configuration,
-- Note: The configuration `generateResolvConf = true` is intended to create /etc/resolv.conf,
+- Note: The configuration `generateResolvConf = false` works only if<br/>
+  `/etc/resolv.conf` is not a symlink, exists already or is managed by `wsl-boot.bat`,
 - May be you don't want to start ssh service at boot,
-- May be you don't have Git for Windows installed, so you don't have GitBash and tee,
-- Please set variable windowsUsername before run these commands.
+- May be you don't have Git for Windows installed, so you don't have GitBash and tee (see `wsl-boot-task.bat`),
 
 ```bash
 # From the WSL2 machine, say ubuntu, in a path accessible from Windows
+windowsUsername=crozier # this your username on Windows
 mkdir -p /mnt/c/Users/${windowsUsername}/git/github.com
 cd $_
 git clone https://github.com/ocroz/wsl2-boot
 cd wsl2-boot
+
+# Create environment variable on Windows
+Windows > Settings > System > About > Advanced System Settings > Environment Variables
+(user variables) New... > Name = WSL2_BOOT, Value = %USERPROFILE%\git\github.com\wsl2-boot (where you cloned) > OK
 
 # First time on Linux
 sudo visudo
@@ -22,15 +27,26 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt install -y dos2unix
 sudo ssh-keygen -A
- 
+
+# How to create /etc/resolv.conf
+# 1. Static solution
+#    - `rm /etc/resolv.conf`        # Remove the symlink
+#    - `vi /etc/resolv.conf`        # Create file as per your needs
+#    - `chattr +i /etc/resolv.conf` # Make it unmodifiable
+# 2. Dynamic solution (allows to adapt DnsServer and DnsSearch on the fly when you connect/disconnect VPN)
+#    Pass DnsServer to /boot/wsl-boot.sh with option -n (see wsl-boot.bat), then:
+#    - either `generateResolvConf = true` in `/etc/wsl.conf`, # So WSL creates /run/resolvconf/resolv.conf at boot
+#    - or `generateResolvConf = false` and `rm /etc/resolv.conf` # Remove link to unexistent file
+
 # Linux part
+sudo rm /etc/resolv.conf # see above dynamic solution
 sudo cp linux/wsl.conf /etc/
 sudo cp linux/wsl-boot.sh /boot/
 sudo chmod 744 /boot/wsl-boot.sh
+sudo dos2unix /etc/wsl.conf /boot/wsl-boot.sh
 #cat linux/crontab.root | sudo crontab
  
 # Windows part
-unix2dos windows/.[bw]* windows/*
 cat windows/.bash_profile >>/mnt/c/Users/${windowsUsername}/.bash_profile
 cp windows/.wslconfig /mnt/c/Users/${windowsUsername}/
 cp windows/wsl-boot.bat /mnt/c/Users/${windowsUsername}/winbin/ # Or wherever in your Windows PATH
@@ -53,7 +69,7 @@ if to run [wsl-boot-task.bat](./windows/wsl-boot-task.bat) with elevated permiss
 - Open the [Windows Task Scheduler](https://www.windowscentral.com/how-create-automated-task-using-task-scheduler-windows-10),
 - Select `Task Scheduler Library` from the left panel, and Right-click on it,
 - Select `Create Task...`,
-- Tab General: Name = `wsl-boot`, tick `Run with highest privileges`,
+- Tab General: Name = `wsl-boot`, tick `Run with highest privileges`, tick `hidden` +configure for `Windows 10`,
 - Tab Triggers: New... > Begin the task `At log on` specific user,
 - Tab Triggers: New... > Begin the task `On event`:<br/>
   Log: Microsoft-Windows-NetworkProfile/Operational<br/>
@@ -65,7 +81,7 @@ if to run [wsl-boot-task.bat](./windows/wsl-boot-task.bat) with elevated permiss
   Event ID: 10001 (The 10001 Event ID is logged when you disconnect from a network),
 - Tab Actions: New... ><br/>
   Program = `C:\WINDOWS\system32\cmd.exe`,<br/>
-  Arguments = `/c start /min %USERPROFILE%\git\github.com\wsl2-boot\windows\wsl-boot-task.bat`,
+  Arguments = `/c start /min %WSL2_BOOT%\windows\wsl-boot-task.bat`,
 - Tab Conditions: Keep default,
 - OK
 
