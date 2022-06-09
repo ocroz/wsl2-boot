@@ -52,6 +52,7 @@ function Start-WslBoot() {
 
   # Check any existing WSL network
   $wslNetwork = Get-HnsNetwork | Where-Object { $_.Name -eq $Name }
+  if ($wslNetwork -ne $null) { $wslNetworkJson = $wslNetwork | ConvertTo-Json; Write-Debug "Current wslNetwork: $wslNetworkJson" }
 
   # Create or recreate WSL network if necessary
   if ($force -Or $wslNetwork -eq $null -Or $wslNetwork.Subnets.AddressPrefix -ne $WslSubnet) {
@@ -67,6 +68,13 @@ function Start-WslBoot() {
     # Delete existing network
     Write-Host "Deleting existing WSL network and other conflicting NAT network ..."
     $wslNetwork | Remove-HnsNetwork
+
+    # Check WSL network is deleted
+    $wslNetwork = Get-HnsNetwork | Where-Object { $_.Name -eq $Name }
+    if ($wslNetwork -ne $null) {
+      $wslNetworkJson = $wslNetwork | ConvertTo-Json
+      Throw "Current wslNetwork could not be deleted: $wslNetworkJson"
+    }
 
     # Destroy WSL network may fail if it happened in the wrong order like if it was done manually
     if (Get-VMSwitch -Name $Name -ea "SilentlyContinue") {
