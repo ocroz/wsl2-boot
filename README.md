@@ -94,8 +94,8 @@ See: https://docs.microsoft.com/en-us/virtualization/windowscontainers/container
 ```powershell
 # Force re-creating the WSL network with this command,
 # which you run from an elevated prompt (Run As Administrator)
-wsl-boot -force $True
-wsl-boot -force $True -Debug
+wsl-boot -force
+wsl-boot -force -Debug
 ```
 
 ## Use WSL2 daily

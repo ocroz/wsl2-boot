@@ -13,6 +13,7 @@ Among others:
 - How best to log?
 - What if Git for Windows is not installed, or in a different directory than "C:\Program Files\Git"?
 - Can we pass parameter `-debug` rather than `-debug True` (same about -force) ?
+  > Yes we can, by using type 'Switch' rather than 'Bool'.
 - How to Write-Debug in main script?
 - How best to pass the debug parameter to children scripts and functions?
 - Error handling?

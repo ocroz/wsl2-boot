@@ -26,8 +26,8 @@
   [parameter(Mandatory=$false)] [String] $WslSubnetPrefix = "192.168.50",
   [parameter(Mandatory=$false)] [String] $distribution = $null,
   [parameter(Mandatory=$false)] [IPAddress] $ip = $null,
-  [parameter(Mandatory=$false)] [Bool] $force = $False,
-  [parameter(Mandatory=$false)] [Bool] $reboot = $False
+  [parameter(Mandatory=$false)] [Switch] $force = $False,
+  [parameter(Mandatory=$false)] [Switch] $reboot = $False
 )
 $Name = "WSL"
 $WslSubnet = "$WSLSubnetPrefix.0/24"
