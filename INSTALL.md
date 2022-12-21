@@ -5,7 +5,6 @@ Please carefully read and understand the scripts before installing them:
 - Note: The configuration `generateResolvConf = false` works only if<br/>
   `/etc/resolv.conf` is not a symlink, exists already or is managed by `wsl-boot.bat`,
 - May be you don't want to start ssh service at boot,
-- May be you don't have Git for Windows installed, so you don't have GitBash and tee (see `wsl-boot-task.bat`),
 
 ```bash
 # From the WSL2 machine, say ubuntu, in a path accessible from Windows

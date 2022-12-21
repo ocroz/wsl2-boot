@@ -2,7 +2,7 @@
 
 The most important is: This solution works !
 
-Now, I am now an expert in PowerShell. The code could be written in a cleaner way.
+Now, I am not an expert in PowerShell. The code could be written in a cleaner way.
 
 Any contribution is welcome.
 
@@ -12,6 +12,7 @@ Among others:
 - Automate the Windows task creation?
 - How best to log?
 - What if Git for Windows is not installed, or in a different directory than "C:\Program Files\Git"?
+  > Alternatively: Use the native PowerShell scriptlet tee.
 - Can we pass parameter `-debug` rather than `-debug True` (same about -force) ?
   > Yes we can, by using type 'Switch' rather than 'Bool'.
 - How to Write-Debug in main script?
